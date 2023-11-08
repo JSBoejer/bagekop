@@ -272,9 +272,6 @@ myFile = SD.open("test.txt", FILE_WRITE);
     Serial.println("error opening test.txt");
   }
 
-
-
-
 }
 ```
 
@@ -284,14 +281,16 @@ Guide: https://arduinogetstarted.com/tutorials/arduino-rtc
 
 #### Installation
 
-Gå til Tools -> Manage Libraries og søg efter "DS3231". Installer biblioteket.
+Gå til Tools -> Manage Libraries og søg efter "DS3231". Installer biblioteket. Eller download zip mappen i src mappen og installer den manuelt.
 
 #### Forbindelser til Arduino Uno
 
-- GND
-- VCC -> 5V
-- SDA -> A4
-- SCL -> A5
+| RTC | Arduino Uno |
+| --- | ----------- |
+| GND | GND         |
+| VCC | 5V          |
+| SDA | A4          |
+| SCL | A5          |
 
 ![Alt text](./images/image-5.png)
 
@@ -354,7 +353,9 @@ void loop()
 
 ## Test af alle sensorer
 
-Slutteligt kan alle sensorer sættes sammen og testes. I kan bruge følgende kode til at teste om alle tingene har forbindelse.
+Slutteligt kan alle sensorer sættes sammen og testes. I kan bruge følgende kode til at teste om alle tingene har forbindelse. Til dette skal i bruge thredboarded (den lange hvide firkant), så I kan forbinde flere komponenter til de samme porte på Arduinoen.
+
+[Setup](./images/setup.png)
 
 ```c++
 #include <Wire.h>
