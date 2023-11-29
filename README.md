@@ -48,7 +48,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 void setup()
 {
   // initialize the LCD
-  lcd.begin();
+  lcd.init();
 
   // Turn on the blacklight
   lcd.setBacklight((uint8_t)1);
@@ -67,7 +67,7 @@ void loop()
 }
 ```
 
-- Initialisering: Funktionen `lcd.begin()` initialiserer displayet og sætter det op til brug. Her definerer man også displayets dimensioner, som i eksemplet er sat til 16 karakterer i bredden og 2 linjer i højden.
+- Initialisering: Funktionen `lcd.init()` initialiserer displayet og sætter det op til brug. Her definerer man også displayets dimensioner, som i eksemplet er sat til 16 karakterer i bredden og 2 linjer i højden.
 - Baggrundslys: Funktionen `lcd.setBacklight()` styrer baggrundslyset på LCD-displayet, hvilket gør det muligt at se teksten under forskellige lysforhold.
 - placering af Cursor: Med `lcd.setCursor()` kan man bestemme hvor på skærmen den efterfølgende tekst skal vises. Dette giver fleksibilitet i visningen af data.
 - Visning af Tekst: Funktionen `lcd.print()` bruges til at vise tekst på displayet. Teksten kan indeholde bogstaver, tal og specialtegn.
@@ -82,6 +82,8 @@ DHT11 er en almindeligt anvendt sensor til måling af temperatur og luftfugtighe
 - Enkel Interface: Sensoren kræver kun én digital pin på Arduino til dataoverførsel, samt en strømforsyning og jordforbindelse.
 
 Der findes mange biblioteker og udgaver. Den version I har er 3-pins versionen beskrevet her: https://www.circuitbasics.com/how-to-set-up-the-dht11-humidity-sensor-on-an-arduino/
+
+For at installere biblioteket, gå til Tools -> Manage Libraries og søg efter "DHTlib" af Rob Tillaart.
 
 #### Forbindelser til Arduino Uno
 
@@ -208,8 +210,14 @@ void loop(void)
   Serial.print(distanceFeet, 2);
 
   Serial.println();
+
+  delay(1000);
 }
 ```
+
+I det ovenstående Arduino-kodeeksempel oprettes et objekt SFEVL53L1X distanceSensor; til at interagere med VL53L1X lasersensoren. I void setup()-funktionen initialiseres sensoren og der tjekkes for en succesfuld opstart, hvis afstand er forskellig fra 0. I void loop()-funktionen foretages der gentagne målinger af afstanden ved hjælp af distanceSensor.getDistance(), hvor afstanden måles i millimeter og konverteres til feet. Disse værdier udskrives til den serial monitor. Efter hver måling indføres en pause på et sekund (1000 millisekunder) med delay(1000)-funktionen, før den næste måling påbegyndes.
+
+
 
 ### SD kortlæser
 
@@ -246,7 +254,7 @@ void setup() {
   Serial.println("initialization done.");
 
 
-// Du kan evt lave en heading i toppen af filen, hvor hver parameter (kolonne) bliver defineret ved navn. Hvis du gør dette, så skriv indkludér dette i void setup
+// Du kan evt lave en heading i toppen af filen, hvor hver parameter (kolonne) bliver defineret ved navn. Hvis I gør dette, så indkludér dette i void loop
 //myFile = SD.open("test.txt", FILE_WRITE);
   //myFile.print("Parameter 1");
   //myFile.print("\t"); //Dette angiver at vi starter en ny kolonne
@@ -281,14 +289,14 @@ Guide: https://arduinogetstarted.com/tutorials/arduino-rtc
 
 #### Installation
 
-Gå til Tools -> Manage Libraries og søg efter "DS3231". Installer biblioteket. Eller download zip mappen i src mappen og installer den manuelt.
+Gå til Tools -> Manage Libraries og søg efter "RTClib" by Adafruit. Installer biblioteket. Eller download zip mappen i src mappen og installer den manuelt.
 
 #### Forbindelser til Arduino Uno
 
 | RTC | Arduino Uno |
 | --- | ----------- |
 | GND | GND         |
-| VCC | 5V          |
+| VCC | 3.3V          |
 | SDA | A4          |
 | SCL | A5          |
 
@@ -297,57 +305,52 @@ Gå til Tools -> Manage Libraries og søg efter "DS3231". Installer biblioteket.
 #### Kode til afprøvning
 
 ```c++
-// DS3231_Serial_Easy
-// Copyright (C)2015 Rinky-Dink Electronics, Henning Karlsen. All right reserved
-// web: http://www.RinkyDinkElectronics.com/
-//
-// A quick demo of how to use my DS3231-library to
-// quickly send time and date information over a serial link
-//
-// To use the hardware I2C (TWI) interface of the Arduino you must connect
-// the pins as follows:
-//
-// Arduino Uno/2009:
-// ----------------------
-// DS3231:  SDA pin   -> Arduino Analog 4 or the dedicated SDA pin
-//          SCL pin   -> Arduino Analog 5 or the dedicated SCL pin
-//
-//
+/*
+ * Created by ArduinoGetStarted.com
+ *
+ * This example code is in the public domain
+ *
+ * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-rtc
+ */
 
-#include <DS3231.h>
+#include <RTClib.h>
 
-// Init the DS3231 using the hardware interface
-DS3231  rtc(SDA, SCL);
+RTC_DS3231 rtc;
 
-void setup()
-{
-  // Setup Serial connection
-  Serial.begin(115200);
+void setup () {
+  Serial.begin(9600);
 
-  // Initialize the rtc object
-  rtc.begin();
+  // SETUP RTC MODULE
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    Serial.flush();
+    while (1);
+  }
 
-  // The following lines can be uncommented to set the date and time
-  //rtc.setDOW(WEDNESDAY);     // Set Day-of-Week to SUNDAY
-  //rtc.setTime(12, 0, 0);     // Set the time to 12:00:00 (24hr format)
-  //rtc.setDate(1, 1, 2014);   // Set the date to January 1st, 2014
+  // automatically sets the RTC to the date & time on PC this sketch was compiled
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+
+  // manually sets the RTC with an explicit date & time, for example to set
+  // January 21, 2021 at 3am you would call:
+  // rtc.adjust(DateTime(2021, 1, 21, 3, 0, 0));
 }
 
-void loop()
-{
-  // Send Day-of-Week
-  Serial.print(rtc.getDOWStr());
+void loop () {
+  DateTime now = rtc.now();
+  Serial.print("Date & Time: ");
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day(), DEC);
   Serial.print(" ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.println(now.second(), DEC);
 
-  // Send date
-  Serial.print(rtc.getDateStr());
-  Serial.print(" -- ");
-
-  // Send time
-  Serial.println(rtc.getTimeStr());
-
-  // Wait one second before repeating :)
-  delay (1000);
+  delay(1000); // delay 1 seconds
 }
 ```
 
@@ -364,7 +367,7 @@ Slutteligt kan alle sensorer sættes sammen og testes. I kan bruge følgende kod
 #include "SparkFun_VL53L1X.h"
 #include <SPI.h>
 #include <SD.h>
-#include <DS3231.h>
+#include <RTClib.h>
 
 // LCD setup
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -377,53 +380,64 @@ dht DHT;
 SFEVL53L1X distanceSensor;
 
 // RTC setup
-DS3231 rtc(SDA, SCL);
+RTC_DS3231 rtc;
 
 // SD card setup
 File myFile;
-const int chipSelect = 10; // CS pin for SD card module
+const int chipSelect = 10;
 
 void setup() {
-  // Begin Serial communication
   Serial.begin(9600);
 
-  // Initialize the LCD
-  lcd.begin();
+  // LCD
+  lcd.init();
   lcd.setBacklight((uint8_t)1);
-  lcd.clear();
 
-  // Initialize DHT11
-  // Note: DHT does not require an explicit begin call
+  // DHT11 (no explicit initialization required)
 
-  // Initialize VL53L1X distance sensor
+  // VL53L1X distance sensor
   Wire.begin();
   if (distanceSensor.begin() != 0) {
     Serial.println("VL53L1X sensor initialization failed");
     while (1);
   }
 
-  // Initialize RTC
-  rtc.begin();
+  // RTC
+  if (!rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 
-  // Initialize SD card
+  // SD card
   Serial.print("Initializing SD card...");
   if (!SD.begin(chipSelect)) {
     Serial.println("initialization failed!");
     while (1);
   }
   Serial.println("initialization done.");
-
-  // Print initial message on LCD
-  lcd.print("System Ready");
 }
 
 void loop() {
-  // Read temperature and humidity from DHT11
-  int chk = DHT.read11(DHT11_PIN);
+  // Read from DHT11
+  DHT.read11(DHT11_PIN);
   float temperature = DHT.temperature;
   float humidity = DHT.humidity;
 
-  // Display temperature and humidity on LCD
+  // Read from VL53L1X
+  distanceSensor.startRanging();
+  while (!distanceSensor.checkForDataReady()) {
+    delay(1);
+  }
+  int distance = distanceSensor.getDistance();
+  distanceSensor.clearInterrupt();
+  distanceSensor.stopRanging();
+
+  // Get current date and time from RTC
+  DateTime now = rtc.now();
+
+  // Update LCD
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Temp: ");
   lcd.print(temperature);
@@ -433,58 +447,42 @@ void loop() {
   lcd.print(humidity);
   lcd.print("%");
 
-    delay(2000);
+  delay(2000);
 
-  // Get distance measurement from VL53L1X
-  distanceSensor.startRanging();
-  while (!distanceSensor.checkForDataReady()) {
-    delay(1);
-  }
-  int distance = distanceSensor.getDistance();
-  distanceSensor.clearInterrupt();
-  distanceSensor.stopRanging();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Distance:");
+  lcd.setCursor(0, 1);
+  lcd.print(distance);
+  lcd.print(" mm");
 
-  // Clear LCD and print distance
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Distance:");
-    lcd.setCursor(0, 1);
-    lcd.print(distance);
-    lcd.print(" mm");
-
-
-  // Output the sensor readings to the serial monitor
-  Serial.print("Temperature: ");
-  Serial.print(temperature);
-  Serial.print(" C, Humidity: ");
-  Serial.print(humidity);
-  Serial.print("%, Distance: ");
-  Serial.print(distance);
-  Serial.println(" mm");
-
-  // Get the current date and time from RTC
-  String currentDate = rtc.getDateStr();
-  String currentTime = rtc.getTimeStr();
-
-  // Log data to the SD card
+  // Log data to SD card
   myFile = SD.open("log.txt", FILE_WRITE);
   if (myFile) {
-    myFile.print(currentDate);
-    myFile.print(",");
-    myFile.print(currentTime);
-    myFile.print(",");
+    myFile.print(now.year());
+    myFile.print('/');
+    myFile.print(now.month());
+    myFile.print('/');
+    myFile.print(now.day());
+    myFile.print("\t");
+    myFile.print(now.hour());
+    myFile.print(':');
+    myFile.print(now.minute());
+    myFile.print(':');
+    myFile.print(now.second());
+    myFile.print("\t");
     myFile.print(temperature);
-    myFile.print(",");
+    myFile.print("\t");
     myFile.print(humidity);
-    myFile.print(",");
+    myFile.print("\t");
     myFile.println(distance);
     myFile.close();
   } else {
     Serial.println("Error opening log.txt");
   }
 
-  // Update LCD every 2 seconds
+  // Delay before next loop iteration
   delay(2000);
-  lcd.clear();
 }
+
 ```
