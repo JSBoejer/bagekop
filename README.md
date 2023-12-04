@@ -414,6 +414,24 @@ void setup() {
     while (1);
   }
   Serial.println("initialization done.");
+
+   // Log headers to SD card
+  myFile = SD.open("log.txt", FILE_WRITE);
+  if (myFile) {
+  myFile.print("Date");
+  myFile.print("\t");
+  myFile.print("Time");
+  myFile.print("\t");
+  myFile.print("Temperature (C)");
+  myFile.print("\t");
+  myFile.print("Humidity (%)");
+  myFile.print("\t");
+  myFile.print("Distance (mm)");
+  myFile.print("\n");
+  myFile.close();
+  } else {
+    Serial.println("Error opening log.txt");
+  }
 }
 
 void loop() {
