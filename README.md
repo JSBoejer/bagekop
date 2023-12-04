@@ -217,8 +217,6 @@ void loop(void)
 
 I det ovenstående Arduino-kodeeksempel oprettes et objekt SFEVL53L1X distanceSensor; til at interagere med VL53L1X lasersensoren. I void setup()-funktionen initialiseres sensoren og der tjekkes for en succesfuld opstart, hvis afstand er forskellig fra 0. I void loop()-funktionen foretages der gentagne målinger af afstanden ved hjælp af distanceSensor.getDistance(), hvor afstanden måles i millimeter og konverteres til feet. Disse værdier udskrives til den serial monitor. Efter hver måling indføres en pause på et sekund (1000 millisekunder) med delay(1000)-funktionen, før den næste måling påbegyndes.
 
-
-
 ### SD kortlæser
 
 SD kortlæseren bruges til at samle data op for fra jeres sensorer. En beskrivelse af modulet findes her: https://lastminuteengineers.com/arduino-micro-sd-card-module-tutorial/?utm_content=cmp-true
@@ -296,7 +294,7 @@ Gå til Tools -> Manage Libraries og søg efter "RTClib" by Adafruit. Installer 
 | RTC | Arduino Uno |
 | --- | ----------- |
 | GND | GND         |
-| VCC | 3.3V          |
+| VCC | 3.3V        |
 | SDA | A4          |
 | SCL | A5          |
 
@@ -478,7 +476,14 @@ void loop() {
     myFile.println(distance);
     myFile.close();
   } else {
+    // if the file didn't open, print an error to serial monitor:
     Serial.println("Error opening log.txt");
+    // If the file didn't open, print to LCD instead
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Error opening");
+    lcd.setCursor(0, 1);
+    lcd.print("SDcard");
   }
 
   // Delay before next loop iteration
