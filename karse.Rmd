@@ -1,0 +1,45 @@
+
+
+
+
+
+
+
+
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
+
+
+```{r}
+data <- read_delim("./data/test1_20231205.TXT", delim = "\t")
+
+
+data_clean <- data %>%
+    janitor::clean_names() %>%
+    filter(date != "Date") %>%
+    filter(!is.na(temperature_c)) %>%
+    mutate(
+        t = ymd_hms(paste0(date, " ", time))
+    ) %>%
+    filter(
+        t >= ymd("2023-12-02")
+    )
+```
+
+# dot plot of distance
+
+```{r}
+ggplot(data_clean, aes(x = t, y = distance_mm)) +
+    geom_point() +
+    labs(
+        x = "Time",
+        y = "Distance (mm)"
+    ) +
+    theme_minimal() +
+    ylim(0, 100)
+```
