@@ -25,6 +25,7 @@ const int chipSelect = 10;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(A0, INPUT);  // Light sensor setup
 
   // LCD
   lcd.init();
@@ -54,20 +55,22 @@ void setup() {
   }
   Serial.println("initialization done.");
 
-   // Log headers to SD card
+  // Log headers to SD card
   myFile = SD.open("log.txt", FILE_WRITE);
   if (myFile) {
-  myFile.print("Date");
-  myFile.print("\t");
-  myFile.print("Time");
-  myFile.print("\t");
-  myFile.print("Temperature (C)");
-  myFile.print("\t");
-  myFile.print("Humidity (%)");
-  myFile.print("\t");
-  myFile.print("Distance (mm)");
-  myFile.print("\n");
-  myFile.close();
+    myFile.print("Date");
+    myFile.print("\t");
+    myFile.print("Time");
+    myFile.print("\t");
+    myFile.print("Temperature (C)");
+    myFile.print("\t");
+    myFile.print("Humidity (%)");
+    myFile.print("\t");
+    myFile.print("Distance (mm)");
+    myFile.print("\t");
+    myFile.print("Light (0-100)");
+    myFile.print("\n");
+    myFile.close();
   } else {
     Serial.println("Error opening log.txt");
   }
@@ -88,10 +91,14 @@ void loop() {
   distanceSensor.clearInterrupt();
   distanceSensor.stopRanging();
 
+  // Read light level
+  int lightRaw = analogRead(A0);
+  int light = map(lightRaw, 0, 1023, 0, 100);
+
   // Get current date and time from RTC
   DateTime now = rtc.now();
 
-  // Update LCD
+  // Update LCD for temperature and humidity
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Temp: ");
@@ -101,17 +108,20 @@ void loop() {
   lcd.print("Humidity: ");
   lcd.print(humidity);
   lcd.print("%");
-
   delay(2000);
 
+  // Update LCD for distance and light
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Distance:");
-  lcd.setCursor(0, 1);
+  lcd.print("Dist: ");
   lcd.print(distance);
-  lcd.print(" mm");
+  lcd.print("mm");
+  lcd.setCursor(0, 1);
+  lcd.print("Light: ");
+  lcd.print(light);
+  lcd.print("%");
 
-  // Log data to SD card
+   // Log data to SD card
   myFile = SD.open("log.txt", FILE_WRITE);
   if (myFile) {
     myFile.print(now.year());
@@ -130,17 +140,19 @@ void loop() {
     myFile.print("\t");
     myFile.print(humidity);
     myFile.print("\t");
-    myFile.println(distance);
+    myFile.print(distance);
+    myFile.print("\t");
+    myFile.println(light);
     myFile.close();
   } else {
-    // if the file didn't open, print an error to serial monitor:
+    // if the file didn't open, print an error:
     Serial.println("Error opening log.txt");
-    // If the file didn't open, print to LCD instead
+    // You might also want to display an error on the LCD here
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Error opening");
     lcd.setCursor(0, 1);
-    lcd.print("SDcard");
+    lcd.print("log.txt");
   }
 
   // Delay before next loop iteration
