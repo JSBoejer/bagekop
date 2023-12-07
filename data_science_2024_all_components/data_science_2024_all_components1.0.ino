@@ -45,7 +45,7 @@ void setup() {
     Serial.println("Couldn't find RTC");
     while (1);
   }
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 
   // SD card
   Serial.print("Initializing SD card...");

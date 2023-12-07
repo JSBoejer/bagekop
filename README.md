@@ -351,6 +351,7 @@ void loop () {
   delay(1000); // delay 1 seconds
 }
 ```
+
 ### Light Sensor (Photoresistor)
 
 En lyssensor eller fotoresistor er en type resistor, hvis modstand ændrer sig afhængigt af mængden af lys, den bliver udsat for. Generelt set, når lyset bliver stærkere, falder modstanden, og når det er mørkere, stiger modstanden. Fotoresistorer er ofte anvendt i elektroniske projekter, hvor der er brug for en simpel og billig måde at måle lysintensitet.
@@ -358,10 +359,11 @@ En lyssensor eller fotoresistor er en type resistor, hvis modstand ændrer sig a
 Guide: https://www.instructables.com/Light-Sensor-Photoresistor-Arduino-Tinkercad/
 
 #### Installation
+
 Det er ikke nødvendigt at installere et biblotek for denne komponent.
 
-
 #### Forbindelser til Arduino Uno
+
 ![Alt text](./images/image-7.png)
 
 #### Kode til afprøvning
@@ -442,7 +444,6 @@ void setup() {
     Serial.println("Couldn't find RTC");
     while (1);
   }
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 
   // SD card
   Serial.print("Initializing SD card...");
