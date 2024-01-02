@@ -1,5 +1,7 @@
 # Den store karse kop.
 
+![image](./images/image-8.webp)
+
 Dette dokument beskriver, hvordan man tester de enkelte komponenter i det store karse kop system. Test af de enkelte komponenter inden I sætter dem sammen, kan spare jer for meget tid og frustrationer forbundet med fejlfinding. Typiske årsager til fejl er:
 
 - Forkert tilslutning af komponenter
