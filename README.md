@@ -1,6 +1,6 @@
 # Den store karse kop.
 
-![image](./images/image-8.webp)
+![image](./images/image-10.webp)
 
 Dette dokument beskriver, hvordan man tester de enkelte komponenter i det store karse kop system. Test af de enkelte komponenter inden I sætter dem sammen, kan spare jer for meget tid og frustrationer forbundet med fejlfinding. Typiske årsager til fejl er:
 
@@ -122,13 +122,13 @@ void loop(){
 
 I det ovenstående Arduino-kodeeksempel indlæses data fra DHT11-sensoren ved hjælp af DHT.read11(DHT11_PIN)-funktionen, hvor DHT11_PIN repræsenterer den digitale pin på Arduino-boardet, som sensoren er tilsluttet til. Når data er indlæst, kan temperatur og fugtighed aflæses fra DHT.temperature og DHT.humidity. Disse værdier udskrives derefter til seriel monitor hvert sekund (1000 millisekunder), som angivet af delay(1000)-funktionen.
 
-### SparkFun VL53L1X - Laser afstandsmåler
+### VL53L1X - Laser afstandsmåler
 
-SparkFun VL53L1X er en laser afstandsmåler sensor, der bruger en Time of Flight (ToF) sensor. Denne sensor kan måle afstande præcist ved at sende en laserpuls og måle den tid det tager for lyset at blive reflekteret tilbage til sensoren. Her er nogle af de centrale funktioner for SparkFun VL53L1X:
+VL53L1X er en laser afstandsmåler sensor, der bruger en Time of Flight (ToF) sensor. Denne sensor kan måle afstande præcist ved at sende en laserpuls og måle den tid det tager for lyset at blive reflekteret tilbage til sensoren. Her er nogle af de centrale funktioner for VL53L1X:
 
 - Lang Rækkevidde: Sensoren kan måle afstande fra 40mm op til 4 meter, hvilket er betydeligt længere end mange andre ToF-sensorer.
 - Høj Nøjagtighed: VL53L1X tilbyder en imponerende nøjagtighed på ±5mm i optimal betingelser.
-- Beskrivelse: https://github.com/sparkfun/SparkFun_VL53L1X_Arduino_Library
+- Beskrivelse: https://www.waveshare.com/w/upload/7/7c/VL53L1X-Distance-Sensor-User-Manual-en.pdf
 
 #### Installation
 
@@ -142,6 +142,10 @@ Kopier følgende ind i Arduino IDE og klik på linket og installer biblioteket.
 
 #### Forbindelser til Arduino Uno
 
+Indsæt 6PIN ledningen med hanner (dem med spids) i laserafstandsmåleren. Forbind nu laser afstandsmåleren til Arduino som vist nedenfor. Ignorer de kabler, som ikke forbindes til Arduino.
+
+**OBS** Husk at fjerne vakumtapen fra afstandsmåleren.
+
 | VL53L1X | Arduino Uno |
 | ------- | ----------- |
 | SORT    | GND         |
@@ -149,24 +153,11 @@ Kopier følgende ind i Arduino IDE og klik på linket og installer biblioteket.
 | BLÅ     | SDA         |
 | GUL     | SCL         |
 
+![Alt text](./images/image-8.png)
+
 #### Kode til afprøvning
 
 ```c++
-/*
-  Reading distance from the laser based VL53L1X
-  By: Nathan Seidle
-  SparkFun Electronics
-  Date: April 4th, 2018
-  License: This code is public domain but you buy me a beer if you use this and we meet someday (Beerware license).
-
-  SparkFun labored with love to create this code. Feel like supporting open source hardware?
-  Buy a board from SparkFun! https://www.sparkfun.com/products/14667
-
-  This example prints the distance to an object.
-
-  Are you getting weird readings? Be sure the vacuum tape has been removed from the sensor.
-*/
-
 #include <Wire.h>
 #include "SparkFun_VL53L1X.h" //Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
 
@@ -217,7 +208,7 @@ void loop(void)
 }
 ```
 
-I det ovenstående Arduino-kodeeksempel oprettes et objekt SFEVL53L1X distanceSensor; til at interagere med VL53L1X lasersensoren. I void setup()-funktionen initialiseres sensoren og der tjekkes for en succesfuld opstart, hvis afstand er forskellig fra 0. I void loop()-funktionen foretages der gentagne målinger af afstanden ved hjælp af distanceSensor.getDistance(), hvor afstanden måles i millimeter og konverteres til feet. Disse værdier udskrives til den serial monitor. Efter hver måling indføres en pause på et sekund (1000 millisekunder) med delay(1000)-funktionen, før den næste måling påbegyndes.
+I det ovenstående Arduino-kodeeksempel oprettes et objekt SFEVL53L1X distanceSensor til at interagere med VL53L1X lasersensoren. I void setup()-funktionen initialiseres sensoren og der tjekkes for en succesfuld opstart, hvis afstand er forskellig fra 0. I void loop()-funktionen foretages der gentagne målinger af afstanden ved hjælp af distanceSensor.getDistance(), hvor afstanden måles i millimeter og konverteres til feet. Disse værdier udskrives til serial monitor. Efter hver måling indføres en pause på et sekund (1000 millisekunder) med delay(1000)-funktionen, før den næste måling påbegyndes.
 
 ### SD kortlæser
 
@@ -285,72 +276,65 @@ myFile = SD.open("test.txt", FILE_WRITE);
 
 ### RTC - Real Time Clock
 
-Guide: https://arduinogetstarted.com/tutorials/arduino-rtc
+Guide: https://electropeak.com/learn/interfacing-ds1302-real-time-clock-rtc-module-with-arduino/
 
 #### Installation
 
-Gå til Tools -> Manage Libraries og søg efter "RTClib" by Adafruit. Installer biblioteket. Eller download zip mappen i src mappen og installer den manuelt.
+Gå til Tools -> Manage Libraries og søg efter "Rtc by Makuna" by Michael C. Miller. Installer biblioteket.
+
+![Alt text](./images/image-9.png)
 
 #### Forbindelser til Arduino Uno
 
 | RTC | Arduino Uno |
 | --- | ----------- |
 | GND | GND         |
-| VCC | 3.3V        |
-| SDA | A4          |
-| SCL | A5          |
+| VCC | 5V          |
+| CLK | 5           |
+| DAT | 4           |
+| RST | 2           |
 
 ![Alt text](./images/image-5.png)
 
 #### Kode til afprøvning
 
 ```c++
-/*
- * Created by ArduinoGetStarted.com
- *
- * This example code is in the public domain
- *
- * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-rtc
- */
+#include <ThreeWire.h>  
+#include <RtcDS1302.h>
 
-#include <RTClib.h>
+// RTC setup
+ThreeWire myWire(4,5,2); // IO, SCLK, CE
+RtcDS1302<ThreeWire> Rtc(myWire);
 
-RTC_DS3231 rtc;
 
-void setup () {
+void setup() {
   Serial.begin(9600);
 
-  // SETUP RTC MODULE
-  if (! rtc.begin()) {
-    Serial.println("Couldn't find RTC");
-    Serial.flush();
-    while (1);
-  }
+  // RTC
+  Rtc.Begin();
 
-  // automatically sets the RTC to the date & time on PC this sketch was compiled
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-
-  // manually sets the RTC with an explicit date & time, for example to set
-  // January 21, 2021 at 3am you would call:
-  // rtc.adjust(DateTime(2021, 1, 21, 3, 0, 0));
 }
 
-void loop () {
-  DateTime now = rtc.now();
-  Serial.print("Date & Time: ");
-  Serial.print(now.year(), DEC);
-  Serial.print('/');
-  Serial.print(now.month(), DEC);
-  Serial.print('/');
-  Serial.print(now.day(), DEC);
-  Serial.print(" ");
-  Serial.print(now.hour(), DEC);
-  Serial.print(':');
-  Serial.print(now.minute(), DEC);
-  Serial.print(':');
-  Serial.println(now.second(), DEC);
+void loop() {
 
-  delay(1000); // delay 1 seconds
+  // Get current date and time from RTC
+  RtcDateTime now = Rtc.GetDateTime();
+  Serial.print(now.Day());
+  Serial.print('/');
+  Serial.print(now.Month());
+  Serial.print('/');
+  Serial.print(now.Year());
+  Serial.print("\t");
+  Serial.print(now.Hour());
+  Serial.print(':');
+  Serial.print(now.Minute());
+  Serial.print(':');
+  Serial.print(now.Second());
+  Serial.print("\t");
+  Serial.print("\n");
+ // Delay before next loop iteration
+  delay(2000);
+
 }
 ```
 
@@ -358,11 +342,12 @@ void loop () {
 
 En lyssensor eller fotoresistor er en type resistor, hvis modstand ændrer sig afhængigt af mængden af lys, den bliver udsat for. Generelt set, når lyset bliver stærkere, falder modstanden, og når det er mørkere, stiger modstanden. Fotoresistorer er ofte anvendt i elektroniske projekter, hvor der er brug for en simpel og billig måde at måle lysintensitet.
 
-Guide: https://www.instructables.com/Light-Sensor-Photoresistor-Arduino-Tinkercad/
+Guide: https://www.instructables.com/How-to-use-a-photoresistor-or-photocell-Arduino-Tu/
 
 #### Installation
 
 Det er ikke nødvendigt at installere et biblotek for denne komponent.
+**OBS** Anvend en 10 KOhm modstand.
 
 #### Forbindelser til Arduino Uno
 
@@ -405,7 +390,8 @@ Slutteligt kan alle sensorer sættes sammen og testes. I kan bruge følgende kod
 #include "SparkFun_VL53L1X.h"
 #include <SPI.h>
 #include <SD.h>
-#include <RTClib.h>
+#include <ThreeWire.h>  
+#include <RtcDS1302.h>
 
 // LCD setup
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -418,7 +404,8 @@ dht DHT;
 SFEVL53L1X distanceSensor;
 
 // RTC setup
-RTC_DS3231 rtc;
+ThreeWire myWire(4,5,2); // IO, SCLK, CE
+RtcDS1302<ThreeWire> Rtc(myWire);
 
 // SD card setup
 File myFile;
@@ -441,19 +428,18 @@ void setup() {
     while (1);
   }
 
-  // RTC
-  if (!rtc.begin()) {
-    Serial.println("Couldn't find RTC");
-    while (1);
-  }
-
   // SD card
   Serial.print("Initializing SD card...");
-  if (!SD.begin(chipSelect)) {
+  if (!SD.begin(10)) {   //Tallet i parentesen skal være det pinnummer, I har tildelt CS fra modulet til jeres SD-læser
     Serial.println("initialization failed!");
     while (1);
   }
   Serial.println("initialization done.");
+
+
+  // RTC
+  Rtc.Begin();
+
 
   // Log headers to SD card
   myFile = SD.open("log.txt", FILE_WRITE);
@@ -496,7 +482,7 @@ void loop() {
   int light = map(lightRaw, 0, 1023, 0, 100);
 
   // Get current date and time from RTC
-  DateTime now = rtc.now();
+  RtcDateTime now = Rtc.GetDateTime();
 
   // Update LCD for temperature and humidity
   lcd.clear();
@@ -521,20 +507,20 @@ void loop() {
   lcd.print(light);
   lcd.print("%");
 
-   // Log data to SD card
+  // Log data to SD card
   myFile = SD.open("log.txt", FILE_WRITE);
   if (myFile) {
-    myFile.print(now.year());
+    myFile.print(now.Day());
     myFile.print('/');
-    myFile.print(now.month());
+    myFile.print(now.Month());
     myFile.print('/');
-    myFile.print(now.day());
+    myFile.print(now.Year());
     myFile.print("\t");
-    myFile.print(now.hour());
+    myFile.print(now.Hour());
     myFile.print(':');
-    myFile.print(now.minute());
+    myFile.print(now.Minute());
     myFile.print(':');
-    myFile.print(now.second());
+    myFile.print(now.Second());
     myFile.print("\t");
     myFile.print(temperature);
     myFile.print("\t");
