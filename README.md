@@ -19,11 +19,10 @@ Detaljeret beskrivelse af LiquidCrystal_I2C biblioteket kan finde her: https://a
 
 #### Installation
 
-For at installere biblioteket, gå til Tools -> Manage Libraries og søg efter "LiquidCrystal_I2C". Installer biblioteket vist på billedet.
+For at installere biblioteket download `LiquidCrystal_I2C.zip` filen i libraries mappen og installer den i Arduino IDE.
 
-> Det er vigtigt at du vælger det rigtige bibliotek, da der findes flere forskellige versioner.
-
-![image](./images/image.png)
+![image](./images/add_zip.png)
+![image](./images/add_zip2.png)
 
 #### Forbindelser til Arduino Uno
 
@@ -83,9 +82,9 @@ DHT11 er en almindeligt anvendt sensor til måling af temperatur og luftfugtighe
 - Digital Signal Output: DHT11 sender data som et digitalt signal, hvilket reducerer risikoen for signalforstyrrelser over lange afstande.
 - Enkel Interface: Sensoren kræver kun én digital pin på Arduino til dataoverførsel, samt en strømforsyning og jordforbindelse.
 
-Der findes mange biblioteker og udgaver. Den version I har er 3-pins versionen beskrevet her: https://www.circuitbasics.com/how-to-set-up-the-dht11-humidity-sensor-on-an-arduino/
+#### Installation
 
-For at installere biblioteket, gå til Tools -> Manage Libraries og søg efter "DHTlib" af Rob Tillaart.
+For at installere biblioteket download `DHTlib.zip` filen i libraries mappen og installer den i Arduino IDE.
 
 #### Forbindelser til Arduino Uno
 
@@ -132,13 +131,7 @@ VL53L1X er en laser afstandsmåler sensor, der bruger en Time of Flight (ToF) se
 
 #### Installation
 
-Kopier følgende ind i Arduino IDE og klik på linket og installer biblioteket.
-
-```c++
-//Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
-```
-
-![Alt text](./images/image-6.png)
+For at installere biblioteket download `SparkFun_VL53L1X_4m_Laser_Distance_Sensor.zip` filen i libraries mappen og installer den i Arduino IDE.
 
 #### Forbindelser til Arduino Uno
 
@@ -280,9 +273,7 @@ Guide: https://electropeak.com/learn/interfacing-ds1302-real-time-clock-rtc-modu
 
 #### Installation
 
-Gå til Tools -> Manage Libraries og søg efter "Rtc by Makuna" by Michael C. Miller. Installer biblioteket.
-
-![Alt text](./images/IMAGE-9.png)
+Download `Rtc_by_Makuna.zip` filen i libraries mappen og installer den i Arduino IDE.
 
 #### Forbindelser til Arduino Uno
 
