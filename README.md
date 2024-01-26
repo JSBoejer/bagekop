@@ -282,7 +282,7 @@ Guide: https://electropeak.com/learn/interfacing-ds1302-real-time-clock-rtc-modu
 
 Gå til Tools -> Manage Libraries og søg efter "Rtc by Makuna" by Michael C. Miller. Installer biblioteket.
 
-![Alt text](./images/image-9.png)
+![Alt text](./images/IMAGE-9.png)
 
 #### Forbindelser til Arduino Uno
 
