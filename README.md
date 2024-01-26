@@ -19,11 +19,10 @@ Detaljeret beskrivelse af LiquidCrystal_I2C biblioteket kan finde her: https://a
 
 #### Installation
 
-For at installere biblioteket, gå til Tools -> Manage Libraries og søg efter "LiquidCrystal_I2C". Installer biblioteket vist på billedet.
+For at installere biblioteket download `LiquidCrystal_I2C.zip` filen i libraries mappen og installer den i Arduino IDE.
 
-> Det er vigtigt at du vælger det rigtige bibliotek, da der findes flere forskellige versioner.
-
-![image](./images/image.png)
+![image](./images/add_zip.png)
+![image](./images/add_zip2.png)
 
 #### Forbindelser til Arduino Uno
 
@@ -83,9 +82,9 @@ DHT11 er en almindeligt anvendt sensor til måling af temperatur og luftfugtighe
 - Digital Signal Output: DHT11 sender data som et digitalt signal, hvilket reducerer risikoen for signalforstyrrelser over lange afstande.
 - Enkel Interface: Sensoren kræver kun én digital pin på Arduino til dataoverførsel, samt en strømforsyning og jordforbindelse.
 
-Der findes mange biblioteker og udgaver. Den version I har er 3-pins versionen beskrevet her: https://www.circuitbasics.com/how-to-set-up-the-dht11-humidity-sensor-on-an-arduino/
+#### Installation
 
-For at installere biblioteket, gå til Tools -> Manage Libraries og søg efter "DHTlib" af Rob Tillaart.
+For at installere biblioteket download `DHTlib.zip` filen i libraries mappen og installer den i Arduino IDE.
 
 #### Forbindelser til Arduino Uno
 
@@ -132,13 +131,7 @@ VL53L1X er en laser afstandsmåler sensor, der bruger en Time of Flight (ToF) se
 
 #### Installation
 
-Kopier følgende ind i Arduino IDE og klik på linket og installer biblioteket.
-
-```c++
-//Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
-```
-
-![Alt text](./images/image-6.png)
+For at installere biblioteket download `SparkFun_VL53L1X_4m_Laser_Distance_Sensor.zip` filen i libraries mappen og installer den i Arduino IDE.
 
 #### Forbindelser til Arduino Uno
 
@@ -280,9 +273,7 @@ Guide: https://electropeak.com/learn/interfacing-ds1302-real-time-clock-rtc-modu
 
 #### Installation
 
-Gå til Tools -> Manage Libraries og søg efter "Rtc by Makuna" by Michael C. Miller. Installer biblioteket.
-
-![Alt text](./images/image-9.png)
+Download `Rtc_by_Makuna.zip` filen i libraries mappen og installer den i Arduino IDE.
 
 #### Forbindelser til Arduino Uno
 
@@ -299,7 +290,7 @@ Gå til Tools -> Manage Libraries og søg efter "Rtc by Makuna" by Michael C. Mi
 #### Kode til afprøvning
 
 ```c++
-#include <ThreeWire.h>  
+#include <ThreeWire.h>
 #include <RtcDS1302.h>
 
 // RTC setup
@@ -377,21 +368,16 @@ void loop()
 }
 ```
 
-## Test af alle sensorer
+## Sammensætning af 2 komponenter
 
-Slutteligt kan alle sensorer sættes sammen og testes. I kan bruge følgende kode til at teste om alle tingene har forbindelse. Til dette skal i bruge thredboarded (den lange hvide firkant), så I kan forbinde flere komponenter til de samme porte på Arduinoen.
+Her vises et simpelt arduino script, hvor I kan se hvordan man måler temperaturen og fugtigheden med DHT11 og viser det på LCD displayet.
 
-[Setup](./images/setup.png)
+### LCD og DHT11
 
 ```c++
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <dht.h>
-#include "SparkFun_VL53L1X.h"
-#include <SPI.h>
-#include <SD.h>
-#include <ThreeWire.h>  
-#include <RtcDS1302.h>
 
 // LCD setup
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -400,91 +386,23 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 dht DHT;
 #define DHT11_PIN 7
 
-// VL53L1X setup
-SFEVL53L1X distanceSensor;
-
-// RTC setup
-ThreeWire myWire(4,5,2); // IO, SCLK, CE
-RtcDS1302<ThreeWire> Rtc(myWire);
-
-// SD card setup
-File myFile;
-const int chipSelect = 10;
-
 void setup() {
   Serial.begin(9600);
-  pinMode(A0, INPUT);  // Light sensor setup
 
-  // LCD
+  // Initialize the LCD
   lcd.init();
   lcd.setBacklight((uint8_t)1);
 
-  // DHT11 (no explicit initialization required)
-
-  // VL53L1X distance sensor
-  Wire.begin();
-  if (distanceSensor.begin() != 0) {
-    Serial.println("VL53L1X sensor initialization failed");
-    while (1);
-  }
-
-  // SD card
-  Serial.print("Initializing SD card...");
-  if (!SD.begin(10)) {   //Tallet i parentesen skal være det pinnummer, I har tildelt CS fra modulet til jeres SD-læser
-    Serial.println("initialization failed!");
-    while (1);
-  }
-  Serial.println("initialization done.");
-
-
-  // RTC
-  Rtc.Begin();
-
-
-  // Log headers to SD card
-  myFile = SD.open("log.txt", FILE_WRITE);
-  if (myFile) {
-    myFile.print("Date");
-    myFile.print("\t");
-    myFile.print("Time");
-    myFile.print("\t");
-    myFile.print("Temperature (C)");
-    myFile.print("\t");
-    myFile.print("Humidity (%)");
-    myFile.print("\t");
-    myFile.print("Distance (mm)");
-    myFile.print("\t");
-    myFile.print("Light (0-100)");
-    myFile.print("\n");
-    myFile.close();
-  } else {
-    Serial.println("Error opening log.txt");
-  }
+  // DHT11 initialization is implicit
 }
 
 void loop() {
-  // Read from DHT11
-  DHT.read11(DHT11_PIN);
+  // Read data from DHT11
+  int chk = DHT.read11(DHT11_PIN);
   float temperature = DHT.temperature;
   float humidity = DHT.humidity;
 
-  // Read from VL53L1X
-  distanceSensor.startRanging();
-  while (!distanceSensor.checkForDataReady()) {
-    delay(1);
-  }
-  int distance = distanceSensor.getDistance();
-  distanceSensor.clearInterrupt();
-  distanceSensor.stopRanging();
-
-  // Read light level
-  int lightRaw = analogRead(A0);
-  int light = map(lightRaw, 0, 1023, 0, 100);
-
-  // Get current date and time from RTC
-  RtcDateTime now = Rtc.GetDateTime();
-
-  // Update LCD for temperature and humidity
+  // Display the temperature and humidity on the LCD
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Temp: ");
@@ -494,54 +412,8 @@ void loop() {
   lcd.print("Humidity: ");
   lcd.print(humidity);
   lcd.print("%");
-  delay(2000);
 
-  // Update LCD for distance and light
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Dist: ");
-  lcd.print(distance);
-  lcd.print("mm");
-  lcd.setCursor(0, 1);
-  lcd.print("Light: ");
-  lcd.print(light);
-  lcd.print("%");
-
-  // Log data to SD card
-  myFile = SD.open("log.txt", FILE_WRITE);
-  if (myFile) {
-    myFile.print(now.Day());
-    myFile.print('/');
-    myFile.print(now.Month());
-    myFile.print('/');
-    myFile.print(now.Year());
-    myFile.print("\t");
-    myFile.print(now.Hour());
-    myFile.print(':');
-    myFile.print(now.Minute());
-    myFile.print(':');
-    myFile.print(now.Second());
-    myFile.print("\t");
-    myFile.print(temperature);
-    myFile.print("\t");
-    myFile.print(humidity);
-    myFile.print("\t");
-    myFile.print(distance);
-    myFile.print("\t");
-    myFile.println(light);
-    myFile.close();
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("Error opening log.txt");
-    // You might also want to display an error on the LCD here
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Error opening");
-    lcd.setCursor(0, 1);
-    lcd.print("log.txt");
-  }
-
-  // Delay before next loop iteration
+  // Add a delay before the next loop iteration
   delay(2000);
 }
 ```
