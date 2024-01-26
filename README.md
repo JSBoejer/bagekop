@@ -367,3 +367,53 @@ void loop()
 
 }
 ```
+
+## Sammensætning af 2 komponenter
+
+Her vises et simpelt arduino script, hvor I kan se hvordan man måler temperaturen og fugtigheden med DHT11 og viser det på LCD displayet.
+
+### LCD og DHT11
+
+```c++
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <dht.h>
+
+// LCD setup
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// DHT setup
+dht DHT;
+#define DHT11_PIN 7
+
+void setup() {
+  Serial.begin(9600);
+
+  // Initialize the LCD
+  lcd.init();
+  lcd.setBacklight((uint8_t)1);
+
+  // DHT11 initialization is implicit
+}
+
+void loop() {
+  // Read data from DHT11
+  int chk = DHT.read11(DHT11_PIN);
+  float temperature = DHT.temperature;
+  float humidity = DHT.humidity;
+
+  // Display the temperature and humidity on the LCD
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(temperature);
+  lcd.print("C ");
+  lcd.setCursor(0, 1);
+  lcd.print("Humidity: ");
+  lcd.print(humidity);
+  lcd.print("%");
+
+  // Add a delay before the next loop iteration
+  delay(2000);
+}
+```
