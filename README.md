@@ -304,6 +304,12 @@ void setup() {
   // RTC
   Rtc.Begin();
 
+  //Resets clock module to compile time of the sketch.
+  //RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
+  //Rtc.SetDateTime(compiled);
+
+
+
 }
 
 void loop() {
@@ -327,6 +333,14 @@ void loop() {
   delay(2000);
 
 }
+```
+
+
+Når I benytter clock modulet første gang, er det er god idé at inkludere følgende kode i void setup. Koden vil sætte dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen.
+
+```C++
+  RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
+  Rtc.SetDateTime(compiled);
 ```
 
 ### Light Sensor (Photoresistor)
