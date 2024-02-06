@@ -315,7 +315,7 @@ void setup() {
 void loop() {
 
   // Get current date and time from RTC
-
+  RtcDateTime now = Rtc.GetDateTime();
   // Year
   Serial.print(now.Year());
   Serial.print('-');
