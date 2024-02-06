@@ -316,7 +316,7 @@ void loop() {
 
   // Get current date and time from RTC
 
-// Year
+  // Year
   Serial.print(now.Year());
   Serial.print('-');
 
@@ -350,6 +350,8 @@ void loop() {
 }
 ```
 
+???- "ISO 8601 format"
+ISO 8601 is an international standard for representing dates and times using numbers. It is particularly popular in computer systems, where it is used to represent the current date and time. The format is YYYY-MM-DDTHH:MM:SS, where T is used to separate the date and time.
 
 Når I benytter clock modulet første gang, er det er god idé at inkludere følgende kode i void setup. Koden vil sætte dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen.
 
