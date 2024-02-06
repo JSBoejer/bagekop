@@ -315,22 +315,37 @@ void setup() {
 void loop() {
 
   // Get current date and time from RTC
-  RtcDateTime now = Rtc.GetDateTime();
-  Serial.print(now.Day());
-  Serial.print('/');
-  Serial.print(now.Month());
-  Serial.print('/');
+
+// Year
   Serial.print(now.Year());
-  Serial.print("\t");
+  Serial.print('-');
+
+  // Month
+  if(now.Month() < 10) Serial.print('0');
+  Serial.print(now.Month());
+  Serial.print('-');
+
+  // Day
+  if(now.Day() < 10) Serial.print('0');
+  Serial.print(now.Day());
+  Serial.print('T'); // T is used to separate the date and time in ISO 8601 format
+
+  // Hour
+  if(now.Hour() < 10) Serial.print('0');
   Serial.print(now.Hour());
   Serial.print(':');
+
+  // Minute
+  if(now.Minute() < 10) Serial.print('0');
   Serial.print(now.Minute());
   Serial.print(':');
+
+  // Second
+  if(now.Second() < 10) Serial.print('0');
   Serial.print(now.Second());
-  Serial.print("\t");
-  Serial.print("\n");
- // Delay before next loop iteration
-  delay(2000);
+
+  // delay for 1 second
+  delay(1000);
 
 }
 ```
