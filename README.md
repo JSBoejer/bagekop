@@ -342,7 +342,7 @@ void loop() {
 
   // Second
   if(now.Second() < 10) Serial.print('0');
-  Serial.print(now.Second());
+  Serial.println(now.Second());
 
   // delay for 1 second
   delay(1000);
