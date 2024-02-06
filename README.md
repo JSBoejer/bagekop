@@ -316,25 +316,44 @@ void loop() {
 
   // Get current date and time from RTC
   RtcDateTime now = Rtc.GetDateTime();
-  Serial.print(now.Day());
-  Serial.print('/');
-  Serial.print(now.Month());
-  Serial.print('/');
+  // Year
   Serial.print(now.Year());
-  Serial.print("\t");
+  Serial.print('-');
+
+  // Month
+  if(now.Month() < 10) Serial.print('0');
+  Serial.print(now.Month());
+  Serial.print('-');
+
+  // Day
+  if(now.Day() < 10) Serial.print('0');
+  Serial.print(now.Day());
+  Serial.print('T'); // T is used to separate the date and time in ISO 8601 format
+
+  // Hour
+  if(now.Hour() < 10) Serial.print('0');
   Serial.print(now.Hour());
   Serial.print(':');
+
+  // Minute
+  if(now.Minute() < 10) Serial.print('0');
   Serial.print(now.Minute());
   Serial.print(':');
+
+  // Second
+  if(now.Second() < 10) Serial.print('0');
   Serial.print(now.Second());
-  Serial.print("\t");
-  Serial.print("\n");
- // Delay before next loop iteration
-  delay(2000);
+
+  // delay for 1 second
+  delay(1000);
 
 }
 ```
 
+<details>
+  <summary>ISO 8601 format</summary>
+  ISO 8601 is an international standard for representing dates and times using numbers. It is particularly popular in computer systems, where it is used to represent the current date and time. The format is YYYY-MM-DDTHH:MM:SS, where T is used to separate the date and time.
+</details>
 
 Når I benytter clock modulet første gang, er det er god idé at inkludere følgende kode i void setup. Koden vil sætte dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen.
 
