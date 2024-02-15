@@ -43,28 +43,29 @@ På bagsiden af displayet er der vist en oversigt over de forskellige ben. For a
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-// Set the LCD address to 0x27 for a 16 chars and 2 line display
+// Først skal vi initialisere LCD-displayet og angiver dets dimensioner. Her er det 16 karakterer i bredden og 2 linjer i højden.
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup()
 {
-  // initialize the LCD
+  // Start LCD displayet
   lcd.init();
 
-  // Turn on the blacklight
+  // Tænd baggrundslyset
   lcd.setBacklight((uint8_t)1);
 
-  // First row
+  // Tilføj tekst til displayet
   lcd.print("Hello, world!");
 
-  // Second row
+  // Sæt cursor til at starte på linje 2
   lcd.setCursor(0,1);
+  // Tilføj mere tekst
   lcd.print("Data Science");
 }
 
 void loop()
 {
-  // Do nothing here...
+  // ...
 }
 ```
 
@@ -123,11 +124,7 @@ I det ovenstående Arduino-kodeeksempel indlæses data fra DHT11-sensoren ved hj
 
 ### VL53L1X - Laser afstandsmåler
 
-VL53L1X er en laser afstandsmåler sensor, der bruger en Time of Flight (ToF) sensor. Denne sensor kan måle afstande præcist ved at sende en laserpuls og måle den tid det tager for lyset at blive reflekteret tilbage til sensoren. Her er nogle af de centrale funktioner for VL53L1X:
-
-- Lang Rækkevidde: Sensoren kan måle afstande fra 40mm op til 4 meter, hvilket er betydeligt længere end mange andre ToF-sensorer.
-- Høj Nøjagtighed: VL53L1X tilbyder en imponerende nøjagtighed på ±5mm i optimal betingelser.
-- Beskrivelse: https://www.waveshare.com/w/upload/7/7c/VL53L1X-Distance-Sensor-User-Manual-en.pdf
+VL53L1X er en laser afstandsmåler sensor, der bruger en Time of Flight (ToF) sensor. Denne sensor kan måle afstande præcist ved at sende en laserpuls og måle den tid det tager for lyset at blive reflekteret tilbage til sensoren. Du kan læse mere om sensoren [her](https://www.waveshare.com/w/upload/7/7c/VL53L1X-Distance-Sensor-User-Manual-en.pdf).
 
 #### Installation
 
@@ -141,10 +138,10 @@ Indsæt 6PIN ledningen med hanner (dem med spids) i laserafstandsmåleren. Forbi
 
 | VL53L1X | Arduino Uno |
 | ------- | ----------- |
-| SORT    | GND         |
-| RØD     | 3.3V        |
-| BLÅ     | SDA         |
-| GUL     | SCL         |
+| GND     | GND         |
+| VCC     | 3.3V        |
+| SDA     | SDA         |
+| SCL     | SCL         |
 
 ![Alt text](./images/image-8.png)
 
@@ -152,12 +149,9 @@ Indsæt 6PIN ledningen med hanner (dem med spids) i laserafstandsmåleren. Forbi
 
 ```c++
 #include <Wire.h>
-#include "SparkFun_VL53L1X.h" //Click here to get the library: http://librarymanager/All#SparkFun_VL53L1X
-
+#include "SparkFun_VL53L1X.h"
 
 SFEVL53L1X distanceSensor;
-//Uncomment the following line to use the optional shutdown and interrupt pins.
-//SFEVL53L1X distanceSensor(Wire, SHUTDOWN_PIN, INTERRUPT_PIN);
 
 void setup(void)
 {
@@ -166,7 +160,8 @@ void setup(void)
   Serial.begin(9600);
   Serial.println("VL53L1X Qwiic Test");
 
-  if (distanceSensor.begin() != 0) //Begin returns 0 on a good init
+  // Hvis sensoren finder en fejl under opstart, vil den fryse og udskrive en fejlmeddelelse.
+  if (distanceSensor.begin() != 0)
   {
     Serial.println("Sensor failed to begin. Please check wiring. Freezing...");
     while (1)
@@ -177,31 +172,39 @@ void setup(void)
 
 void loop(void)
 {
-  distanceSensor.startRanging(); //Write configuration bytes to initiate measurement
-  while (!distanceSensor.checkForDataReady())
-  {
-    delay(1);
-  }
-  int distance = distanceSensor.getDistance(); //Get the result of the measurement from the sensor
-  distanceSensor.clearInterrupt();
-  distanceSensor.stopRanging();
+  int distance = getDistance();
 
   Serial.print("Distance(mm): ");
   Serial.print(distance);
 
-  float distanceInches = distance * 0.0393701;
-  float distanceFeet = distanceInches / 12.0;
+  float distanceCM = distance / 10;
 
-  Serial.print("\tDistance(ft): ");
-  Serial.print(distanceFeet, 2);
+  Serial.print("\tDistance(cm): ");
+  Serial.print(distanceCM, 2);
 
   Serial.println();
 
   delay(1000);
 }
+
+
+// Funktion til at måle afstand
+int getDistance() {
+  distanceSensor.startRanging();
+  while (!distanceSensor.checkForDataReady()) {
+    delay(1);
+  }
+  int distance = distanceSensor.getDistance();
+  distanceSensor.clearInterrupt();
+  distanceSensor.stopRanging();
+
+  return distance;
+}
+
+
 ```
 
-I det ovenstående Arduino-kodeeksempel oprettes et objekt SFEVL53L1X distanceSensor til at interagere med VL53L1X lasersensoren. I void setup()-funktionen initialiseres sensoren og der tjekkes for en succesfuld opstart, hvis afstand er forskellig fra 0. I void loop()-funktionen foretages der gentagne målinger af afstanden ved hjælp af distanceSensor.getDistance(), hvor afstanden måles i millimeter og konverteres til feet. Disse værdier udskrives til serial monitor. Efter hver måling indføres en pause på et sekund (1000 millisekunder) med delay(1000)-funktionen, før den næste måling påbegyndes.
+I det ovenstående Arduino-kodeeksempel oprettes et objekt SFEVL53L1X distanceSensor til at interagere med VL53L1X lasersensoren. I void setup()-funktionen initialiseres sensoren og der tjekkes for en succesfuld opstart, hvis afstand er forskellig fra 0. I void loop()-funktionen foretages kan distancen måles med getDistance(), hvor afstanden måles i millimeter. Disse værdier udskrives til serial monitor. Efter hver måling indføres en pause på et sekund (1000 millisekunder) med delay(1000)-funktionen, før den næste måling påbegyndes.
 
 ### SD kortlæser
 
@@ -222,13 +225,10 @@ SD kortlæseren bruges til at samle data op for fra jeres sensorer. En beskrivel
 File myFile;
 
 void setup() {
-  // Følgende linjer SKAL være i void setup
-
-    // Open serial communications and wait for port to open:
   Serial.begin(9600);
 
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ; // Vent på at seriel port er klar
   }
   Serial.print("Initializing SD card...");
   if (!SD.begin(10)) {   //Tallet i parentesen skal være det pinnummer, I har tildelt CS fra modulet til jeres SD-læser
@@ -287,6 +287,24 @@ Download `Rtc_by_Makuna.zip` filen i libraries mappen og installer den i Arduino
 
 ![Alt text](./images/image-5.png)
 
+#### ISO 8601 format
+
+Når I måler tiden er det vigtigt i bruger det rigtige format, da det vil spare jer en masse hovedpine senere, når I skal overføre data til R. I kurset bruger vi ISO 8601 formatet.
+
+<details>
+  <summary>Hvad er ISO 8601 format?</summary>
+  ISO 8601 er en international standard for repræsentation af datoer og tidspunkter ved brug af tal. Den er særligt populær i computersystemer, hvor den bruges til at repræsentere den aktuelle dato og tid. Formatet er YYYY-MM-DDTHH:MM:SS, hvor T bruges til at adskille dato og tid.
+</details>
+
+#### Første gang I benytter clock modulet
+
+Når I benytter clock modulet første gang, er det er god idé at inkludere følgende kode i void setup. Koden vil sætte dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen. Dette skal kun gøres første gang I benytter clock modulet. Herefter skal I fjerne koden.
+
+```C++
+  RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
+  Rtc.SetDateTime(compiled);
+```
+
 #### Kode til afprøvning
 
 ```c++
@@ -297,77 +315,66 @@ Download `Rtc_by_Makuna.zip` filen i libraries mappen og installer den i Arduino
 ThreeWire myWire(4,5,2); // IO, SCLK, CE
 RtcDS1302<ThreeWire> Rtc(myWire);
 
-String getIUPACTime() {
-    // Get current date and time from RTC
-    RtcDateTime now = Rtc.GetDateTime();
-    String dateTime;
-
-    // Year
-    dateTime += String(now.Year());
-    dateTime += '-';
-
-    // Month
-    if (now.Month() < 10) dateTime += '0';
-    dateTime += String(now.Month());
-    dateTime += '-';
-
-    // Day
-    if (now.Day() < 10) dateTime += '0';
-    dateTime += String(now.Day());
-    dateTime += 'T'; // T is used to separate the date and time in ISO 8601 format
-
-    // Hour
-    if (now.Hour() < 10) dateTime += '0';
-    dateTime += String(now.Hour());
-    dateTime += ':';
-
-    // Minute
-    if (now.Minute() < 10) dateTime += '0';
-    dateTime += String(now.Minute());
-    dateTime += ':';
-
-    // Second
-    if (now.Second() < 10) dateTime += '0';
-    dateTime += String(now.Second());
-
-    return dateTime;
-}
-
 void setup() {
   Serial.begin(9600);
 
   // RTC
   Rtc.Begin();
 
-  //Resets clock module to compile time of the sketch.
+  // Denne kode sætter dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen.
+  // Det er en god idé at inkludere denne kode første gang I benytter clock modulet.
+  // Herefter skal I udkommentere koden.
+
   //RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
   //Rtc.SetDateTime(compiled);
-
-
-
 }
 
 void loop() {
-
+  // getIUPACTime() er en custom funktion I finder nederst, derreturnerer tid i ISO 8601 format
   String iupacTime = getIUPACTime();
   Serial.println(iupacTime);
 
   // delay for 1 second
   delay(1000);
-
 }
-```
 
-<details>
-  <summary>ISO 8601 format</summary>
-  ISO 8601 is an international standard for representing dates and times using numbers. It is particularly popular in computer systems, where it is used to represent the current date and time. The format is YYYY-MM-DDTHH:MM:SS, where T is used to separate the date and time.
-</details>
+//  Funktion til at hente tid fra RTC
+String getIUPACTime() {
+    // Få tid fra RTC
+    RtcDateTime now = Rtc.GetDateTime();
+    String dateTime;
 
-Når I benytter clock modulet første gang, er det er god idé at inkludere følgende kode i void setup. Koden vil sætte dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen.
+    // år
+    dateTime += String(now.Year());
+    dateTime += '-';
 
-```C++
-  RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
-  Rtc.SetDateTime(compiled);
+    // måned
+    if (now.Month() < 10) dateTime += '0';
+    dateTime += String(now.Month());
+    dateTime += '-';
+
+    // dag
+    if (now.Day() < 10) dateTime += '0';
+    dateTime += String(now.Day());
+
+    dateTime += 'T'; // T er brugt til at adskille dato og tid i ISO 8601 format
+
+    // tid
+    if (now.Hour() < 10) dateTime += '0';
+    dateTime += String(now.Hour());
+    dateTime += ':';
+
+    // Minuter
+    if (now.Minute() < 10) dateTime += '0';
+    dateTime += String(now.Minute());
+    dateTime += ':';
+
+    // Sekunder
+    if (now.Second() < 10) dateTime += '0';
+    dateTime += String(now.Second());
+
+    return dateTime;
+}
 ```
 
 ### Light Sensor (Photoresistor)
@@ -430,20 +437,19 @@ dht DHT;
 void setup() {
   Serial.begin(9600);
 
-  // Initialize the LCD
+  // start LCD
   lcd.init();
   lcd.setBacklight((uint8_t)1);
 
-  // DHT11 initialization is implicit
 }
 
 void loop() {
-  // Read data from DHT11
+  // Læst temperatur og fugtighed
   int chk = DHT.read11(DHT11_PIN);
   float temperature = DHT.temperature;
   float humidity = DHT.humidity;
 
-  // Display the temperature and humidity on the LCD
+  // Vis data på LCD
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Temp: ");
@@ -454,7 +460,7 @@ void loop() {
   lcd.print(humidity);
   lcd.print("%");
 
-  // Add a delay before the next loop iteration
+  // Vent 2 sekunder
   delay(2000);
 }
 ```
