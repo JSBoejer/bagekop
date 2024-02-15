@@ -138,10 +138,10 @@ Indsæt 6PIN ledningen med hanner (dem med spids) i laserafstandsmåleren. Forbi
 
 | VL53L1X | Arduino Uno |
 | ------- | ----------- |
-| SORT    | GND         |
-| RØD     | 3.3V        |
-| BLÅ     | SDA         |
-| GUL     | SCL         |
+| GND     | GND         |
+| VCC     | 3.3V        |
+| SDA     | SDA         |
+| SCL     | SCL         |
 
 ![Alt text](./images/image-8.png)
 
@@ -177,7 +177,7 @@ void loop(void)
   Serial.print("Distance(mm): ");
   Serial.print(distance);
 
-  float distanceCM = distance / 100;
+  float distanceCM = distance / 10;
 
   Serial.print("\tDistance(cm): ");
   Serial.print(distanceCM, 2);
