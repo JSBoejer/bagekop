@@ -170,8 +170,8 @@ void setup(void)
   Serial.println("Sensor online!");
 }
 
-void loop(void)
-{
+void loop(){
+
   int distance = getDistance();
 
   Serial.print("Distance(mm): ");
