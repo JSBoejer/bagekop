@@ -106,7 +106,7 @@ dht DHT;
 
 #define DHT11_PIN 7
 
-void setup(){
+void setup() {
   Serial.begin(9600);
 }
 
@@ -153,8 +153,8 @@ Indsæt 6PIN ledningen med hanner (dem med spids) i laserafstandsmåleren. Forbi
 
 SFEVL53L1X distanceSensor;
 
-void setup(void)
-{
+void setup() {
+
   Wire.begin();
 
   Serial.begin(9600);
@@ -170,7 +170,7 @@ void setup(void)
   Serial.println("Sensor online!");
 }
 
-void loop(){
+void loop() {
 
   int distance = getDistance();
 
