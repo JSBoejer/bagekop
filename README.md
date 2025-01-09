@@ -1,21 +1,21 @@
-# Den store karse kop.
+# Den Store Surdejskonkurrence
 
 ![image](./images/image-10.webp)
 
-Dette dokument beskriver, hvordan man tester de enkelte komponenter i det store karse kop system. Test af de enkelte komponenter inden I sætter dem sammen, kan spare jer for meget tid og frustrationer forbundet med fejlfinding. Typiske årsager til fejl er:
+Dette dokument beskriver, hvordan man tester de enkelte arduino komponenter til den store surdejskonkurrence. Test af de enkelte komponenter inden I sætter dem sammen, kan spare jer for meget tid og frustrationer forbundet med fejlfinding. Typiske årsager til fejl er:
 
 - Forkert tilslutning af komponenter
-- Manglende biblioteker
+- Manglende eller forkerte biblioteker
 - Ledninger der ikke sidder ordentligt fast / er knækket
 
-Lad ledningerne sidde i komponenten efter hver test.
+Lad ledningerne sidde i komponenten efter hver test. Benyt breadbordet til at teste de enkelte komponenter. Dette kan spare jer en masse besvær, når I skal til at sætte flere komponenter sammen.
 
 ## Test af Arduino Komponenter
 
 ### LiquidCrystal_I2C - 4 pin LCD display
 
 LCD displayet skal bruges til at vise data fra de forskellige sensorer. Ved hele tiden at vise de forskellige sensorers output, kan man se om komponenterne stadig virker som de skal. Det er et 16x2 display, hvilket betyder at det kan vise 16 karakterer i bredden og 2 linjer i højden.
-Detaljeret beskrivelse af LiquidCrystal_I2C biblioteket kan finde her: https://arduinogetstarted.com/tutorials/arduino-lcd-i2c?utm_content=cmp-true.
+Detaljeret beskrivelse af LiquidCrystal_I2C biblioteket kan findes her: https://arduinogetstarted.com/tutorials/arduino-lcd-i2c?utm_content=cmp-true.
 
 #### Installation
 
@@ -23,6 +23,9 @@ For at installere biblioteket download `LiquidCrystal_I2C.zip` filen i libraries
 
 ![image](./images/add_zip.png)
 ![image](./images/add_zip2.png)
+
+I kan finde lokationen til jeres `libraries` folder ved trykke **File** > **Preferences** > **Sketchbook location**. Hvis `libraries` mappen ikke allerede findes på denne lokation, så kan I lave en ny mappe og tilføje jeres bibloteker hertil. Biblotekerne skal være unzipped!
+
 
 #### Forbindelser til Arduino Uno
 
@@ -32,10 +35,12 @@ På bagsiden af displayet er der vist en oversigt over de forskellige ben. For a
 | --- | ----------- |
 | GND | GND         |
 | VCC | 5V          |
-| SDA | A4          |
-| SCL | A5          |
+| SDA | SDA          |
+| SCL | SCL          |
 
 ![Alt text](./images/image-1.png)
+
+**OBS** - Hvis jeres LCD-display ikke umiddelbart viser text, når I uploader jeres sketch uden fejlmeddelelser kan det skyldes at kontrasten skal justeres. Dette kan gøres ved at dreje på skruen på bagsiden af displayet.
 
 #### Kode til afprøvning
 
@@ -69,8 +74,8 @@ void loop()
 }
 ```
 
-- Initialisering: Funktionen `lcd.init()` initialiserer displayet og sætter det op til brug. Her definerer man også displayets dimensioner, som i eksemplet er sat til 16 karakterer i bredden og 2 linjer i højden.
-- Baggrundslys: Funktionen `lcd.setBacklight()` styrer baggrundslyset på LCD-displayet, hvilket gør det muligt at se teksten under forskellige lysforhold.
+- Initialisering: Funktionen `lcd.init()` initialiserer displayet og sætter det op til brug.
+- Baggrundslys: Funktionen `lcd.setBacklight()` styrer baggrundslyset på LCD-displayet.
 - placering af Cursor: Med `lcd.setCursor()` kan man bestemme hvor på skærmen den efterfølgende tekst skal vises. Dette giver fleksibilitet i visningen af data.
 - Visning af Tekst: Funktionen `lcd.print()` bruges til at vise tekst på displayet. Teksten kan indeholde bogstaver, tal og specialtegn.
 
@@ -85,130 +90,91 @@ DHT11 er en almindeligt anvendt sensor til måling af temperatur og luftfugtighe
 
 #### Installation
 
-For at installere biblioteket download `DHTlib.zip` filen i libraries mappen og installer den i Arduino IDE.
+Til temperatur og luftfugtigheds sensoren skal de bruges to biblioteker: `DHT_sensor_libray` og `Adafruit_Sensor-master` Download de to biblioteker i libraries mappen på github siden her og installer dem i Arduino IDE, som angivet for LCD-displayet.
 
 #### Forbindelser til Arduino Uno
 
 | DHT11 | Arduino Uno |
 | ----- | ----------- |
-| DATA  | 7           |
-| VCC   | 5V          |
-| GND   | GND         |
+| +     | 5V           |
+| OUT   | 8          |
+| -     | GND         |
 
 ![Alt text](./images/image-3.png)
 
 #### Kode til afprøvning
 
 ```c++
-#include <dht.h>
-
-dht DHT;
-
-#define DHT11_PIN 7
+#include "DHT.h"
+#define DHTPIN 8    // Digital udgang forbundet til DHT sensor
+#define DHTTYPE DHT11   // DHT 11
+DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
   Serial.begin(9600);
+
+  dht.begin();
 }
 
 void loop(){
-  DHT.read11(DHT11_PIN);
   Serial.print("Temperature = ");
-  Serial.println(DHT.temperature);
+  Serial.println(dht.readTemperature());
   Serial.print("Humidity = ");
-  Serial.println(DHT.humidity);
+  Serial.println(dht.readHumidity());
   delay(1000);
 }
 ```
 
-I det ovenstående Arduino-kodeeksempel indlæses data fra DHT11-sensoren ved hjælp af DHT.read11(DHT11_PIN)-funktionen, hvor DHT11_PIN repræsenterer den digitale pin på Arduino-boardet, som sensoren er tilsluttet til. Når data er indlæst, kan temperatur og fugtighed aflæses fra DHT.temperature og DHT.humidity. Disse værdier udskrives derefter til seriel monitor hvert sekund (1000 millisekunder), som angivet af delay(1000)-funktionen.
+I det ovenstående Arduino-kodeeksempel indlæses data fra DHT11-sensoren via den digital indgang 8 på Arduino-boardet. Når data er indlæst, kan temperatur og fugtighed aflæses fra dht.temperature og dht.humidity. Disse værdier udskrives derefter til serial monitor hvert sekund (1000 millisekunder), som angivet af delay(1000)-funktionen. Tjek kode eksemplerne ud i `DHT_sensor_libray` for mere advanceret brug af dette bibliotek og DHT-sensoren.
 
-### VL53L1X - Laser afstandsmåler
+### Sharp IR Sensor (GP2Y0A41SK0F) - Laser afstandsmåler
 
-VL53L1X er en laser afstandsmåler sensor, der bruger en Time of Flight (ToF) sensor. Denne sensor kan måle afstande præcist ved at sende en laserpuls og måle den tid det tager for lyset at blive reflekteret tilbage til sensoren. Du kan læse mere om sensoren [her](https://www.waveshare.com/w/upload/7/7c/VL53L1X-Distance-Sensor-User-Manual-en.pdf).
+Sharp IR Sensor (GP2Y0A41SK0F) er en laser afstandsmåler sensor, der bruger triangulationsprincipper til at måle afstande. Sensoren har et måle område mellem 4 og 30 cm, men virker bedst og mest præcist mellem 4 og 15 cm. Sensoren fungerer ved at udsende en infrarød lysstråle, der reflekteres tilbage fra en genstand. Refleksionen opfanges af en positionsfølsom detektor (PSD) inde i sensoren, som beregner afstanden baseret på vinklen af den reflekterede stråle. Sensoren udsender en spænding som er omvendt proportional med afstanden til genstanden. Du kan læse mere om sensoren [her](https://www.instructables.com/How-to-Use-the-Sharp-IR-Sensor-GP2Y0A41SK0F-Arduin/).
 
 #### Installation
 
-For at installere biblioteket download `SparkFun_VL53L1X_4m_Laser_Distance_Sensor.zip` filen i libraries mappen og installer den i Arduino IDE.
+Der skal ikke benyttes et biblotek til denne sensor.
 
 #### Forbindelser til Arduino Uno
 
-Indsæt 6PIN ledningen med hanner (dem med spids) i laserafstandsmåleren. Forbind nu laser afstandsmåleren til Arduino som vist nedenfor. Ignorer de kabler, som ikke forbindes til Arduino.
+Indsæt 3PIN ledningen i laserafstandsmåleren. Forbind nu laser afstandsmåleren til Arduino som vist nedenfor. Det kan være nødvendigt at strippe ledningernes ender først.
 
-**OBS** Husk at fjerne vakumtapen fra afstandsmåleren.
+**OBS** Hvis denne sensor ikke forbindes til jord korrekt, så overopheder den.
 
-| VL53L1X | Arduino Uno |
-| ------- | ----------- |
-| GND     | GND         |
-| VCC     | 3.3V        |
-| SDA     | SDA         |
-| SCL     | SCL         |
+| IR Sensor | Arduino Uno |
+| --------- | ----------- |
+| SORT      | GND         |
+| RØD       | 3.3V        |
+| GUL       | A0          |
 
 ![Alt text](./images/image-8.png)
 
 #### Kode til afprøvning
 
 ```c++
-#include <Wire.h>
-#include "SparkFun_VL53L1X.h"
-
-SFEVL53L1X distanceSensor;
+#define sensor A0 // Sharp IR GP2Y0A41SK0F (4-30cm, analog) - Definerer analog indgang for afstandssensor
 
 void setup() {
-
-  Wire.begin();
-
-  Serial.begin(9600);
-  Serial.println("VL53L1X Qwiic Test");
-
-  // Hvis sensoren finder en fejl under opstart, vil den fryse og udskrive en fejlmeddelelse.
-  if (distanceSensor.begin() != 0)
-  {
-    Serial.println("Sensor failed to begin. Please check wiring. Freezing...");
-    while (1)
-      ;
-  }
-  Serial.println("Sensor online!");
+  Serial.begin(9600); // start serial port
 }
 
 void loop() {
-
-  int distance = getDistance();
-
-  Serial.print("Distance(mm): ");
-  Serial.print(distance);
-
-  float distanceCM = distance / 10;
-
-  Serial.print("\tDistance(cm): ");
-  Serial.print(distanceCM, 2);
-
-  Serial.println();
-
-  delay(1000);
-}
-
-
-// Funktion til at måle afstand
-int getDistance() {
-  distanceSensor.startRanging();
-  while (!distanceSensor.checkForDataReady()) {
-    delay(1);
+  
+  // Måler distance med IR-afstandsmåler
+  float volts = analogRead(sensor)*0.0048828125;  // Omregner værdi fra bit til volt: Værdi fra sensor * (5/1024)
+  float distance = 13*pow(volts, -1); // Omregner volt til afstand (cm) vha. funktion for standardkurve
+  
+  if (distance <= 30){
+    Serial.println(distance);
   }
-  int distance = distanceSensor.getDistance();
-  distanceSensor.clearInterrupt();
-  distanceSensor.stopRanging();
-
-  return distance;
 }
-
-
 ```
 
-I det ovenstående Arduino-kodeeksempel oprettes et objekt SFEVL53L1X distanceSensor til at interagere med VL53L1X lasersensoren. I void setup()-funktionen initialiseres sensoren og der tjekkes for en succesfuld opstart, hvis afstand er forskellig fra 0. I void loop()-funktionen foretages kan distancen måles med getDistance(), hvor afstanden måles i millimeter. Disse værdier udskrives til serial monitor. Efter hver måling indføres en pause på et sekund (1000 millisekunder) med delay(1000)-funktionen, før den næste måling påbegyndes.
+I det ovenstående Arduino-kodeeksempel definere vi et sensor object, som repræsenterer analog indgang A0. I void loop() konveterer vi først signalet fra A0 til volt igen, da den analoge indgang konveterer spændingen til digital signal. Arduinoen er 10 bit. Det vil sige, at det analoge signals måleområde indeles i 2^10 = 1024 intervaler. For at omregne det digitale signal til volt igen, så skal gange det digitale signal med måleområdet (0V-5V) divideret med antal intervaler. Derefter bruger vi en funktion til at omregne spændingen til afstand i cm. Funktionen kommer fra standardkurven, som ikke kan finde i linket længere oppe.
 
 ### SD kortlæser
 
-SD kortlæseren bruges til at samle data op for fra jeres sensorer. En beskrivelse af modulet findes her: https://lastminuteengineers.com/arduino-micro-sd-card-module-tutorial/?utm_content=cmp-true
+SD kortlæseren bruges til at gemme data fra jeres sensorer. En beskrivelse af modulet findes her: https://lastminuteengineers.com/arduino-micro-sd-card-module-tutorial/?utm_content=cmp-true
 
 #### Forbindelser til Arduino Uno
 
@@ -231,7 +197,7 @@ void setup() {
     ; // Vent på at seriel port er klar
   }
   Serial.print("Initializing SD card...");
-  if (!SD.begin(10)) {   //Tallet i parentesen skal være det pinnummer, I har tildelt CS fra modulet til jeres SD-læser
+  if (!SD.begin(10)) {   //Tallet i parentesen skal være den pin indgang, som er forbundet til CS på SD-kortlæseren
     Serial.println("initialization failed!");
     while (1);
   }
@@ -267,155 +233,6 @@ myFile = SD.open("test.txt", FILE_WRITE);
 }
 ```
 
-### RTC - Real Time Clock
-
-Guide: https://electropeak.com/learn/interfacing-ds1302-real-time-clock-rtc-module-with-arduino/
-
-#### Installation
-
-Download `Rtc_by_Makuna.zip` filen i libraries mappen og installer den i Arduino IDE.
-
-#### Forbindelser til Arduino Uno
-
-| RTC | Arduino Uno |
-| --- | ----------- |
-| GND | GND         |
-| VCC | 5V          |
-| CLK | 5           |
-| DAT | 4           |
-| RST | 2           |
-
-![Alt text](./images/image-5.png)
-
-#### ISO 8601 format
-
-Når I måler tiden er det vigtigt i bruger det rigtige format, da det vil spare jer en masse hovedpine senere, når I skal overføre data til R. I kurset bruger vi ISO 8601 formatet.
-
-<details>
-  <summary>Hvad er ISO 8601 format?</summary>
-  ISO 8601 er en international standard for repræsentation af datoer og tidspunkter ved brug af tal. Den er særligt populær i computersystemer, hvor den bruges til at repræsentere den aktuelle dato og tid. Formatet er YYYY-MM-DDTHH:MM:SS, hvor T bruges til at adskille dato og tid.
-</details>
-
-#### Første gang I benytter clock modulet
-
-Når I benytter clock modulet første gang, er det er god idé at inkludere følgende kode i void setup. Koden vil sætte dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen. Dette skal kun gøres første gang I benytter clock modulet. Herefter skal I fjerne koden.
-
-```C++
-  RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
-  Rtc.SetDateTime(compiled);
-```
-
-#### Kode til afprøvning
-
-```c++
-#include <ThreeWire.h>
-#include <RtcDS1302.h>
-
-// RTC setup
-ThreeWire myWire(4,5,2); // IO, SCLK, CE
-RtcDS1302<ThreeWire> Rtc(myWire);
-
-void setup() {
-  Serial.begin(9600);
-
-  // RTC
-  Rtc.Begin();
-
-  // Denne kode sætter dato og tid i jeres clock modul til tidspunktet, hvor I uploader jeres script til arduinoen.
-  // Det er en god idé at inkludere denne kode første gang I benytter clock modulet.
-  // Herefter skal I udkommentere koden.
-
-  //RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
-  //Rtc.SetDateTime(compiled);
-}
-
-void loop() {
-  // getIUPACTime() er en custom funktion I finder nederst, derreturnerer tid i ISO 8601 format
-  String iupacTime = getIUPACTime();
-  Serial.println(iupacTime);
-
-  // delay for 1 second
-  delay(1000);
-}
-
-//  Funktion til at hente tid fra RTC
-String getIUPACTime() {
-    // Få tid fra RTC
-    RtcDateTime now = Rtc.GetDateTime();
-    String dateTime;
-
-    // år
-    dateTime += String(now.Year());
-    dateTime += '-';
-
-    // måned
-    if (now.Month() < 10) dateTime += '0';
-    dateTime += String(now.Month());
-    dateTime += '-';
-
-    // dag
-    if (now.Day() < 10) dateTime += '0';
-    dateTime += String(now.Day());
-
-    dateTime += 'T'; // T er brugt til at adskille dato og tid i ISO 8601 format
-
-    // tid
-    if (now.Hour() < 10) dateTime += '0';
-    dateTime += String(now.Hour());
-    dateTime += ':';
-
-    // Minuter
-    if (now.Minute() < 10) dateTime += '0';
-    dateTime += String(now.Minute());
-    dateTime += ':';
-
-    // Sekunder
-    if (now.Second() < 10) dateTime += '0';
-    dateTime += String(now.Second());
-
-    return dateTime;
-}
-```
-
-### Light Sensor (Photoresistor)
-
-En lyssensor eller fotoresistor er en type resistor, hvis modstand ændrer sig afhængigt af mængden af lys, den bliver udsat for. Generelt set, når lyset bliver stærkere, falder modstanden, og når det er mørkere, stiger modstanden. Fotoresistorer er ofte anvendt i elektroniske projekter, hvor der er brug for en simpel og billig måde at måle lysintensitet.
-
-Guide: https://www.instructables.com/How-to-use-a-photoresistor-or-photocell-Arduino-Tu/
-
-#### Installation
-
-Det er ikke nødvendigt at installere et biblotek for denne komponent.
-**OBS** Anvend en 10 KOhm modstand.
-
-#### Forbindelser til Arduino Uno
-
-![Alt text](./images/image-7.png)
-
-#### Kode til afprøvning
-
-```c++
-int sensorValue = 0;
-
-void setup()
-{
-  pinMode(A0, INPUT);
-  Serial.begin(9600);
-}
-
-void loop()
-{
-  // read the value from the sensor
-  int lightRaw = analogRead(A0);
-  // print the sensor reading so you know its range
-  int light = map(lightRaw, 0, 1023, 0, 100);
-  Serial.println(light);
-
-  delay(1000); // Wait for 1 second
-
-}
-```
-
 ## Sammensætning af 2 komponenter
 
 Her vises et simpelt arduino script, hvor I kan se hvordan man måler temperaturen og fugtigheden med DHT11 og viser det på LCD displayet.
@@ -425,14 +242,15 @@ Her vises et simpelt arduino script, hvor I kan se hvordan man måler temperatur
 ```c++
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include <dht.h>
+#include "DHT.h"
 
 // LCD setup
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // DHT setup
-dht DHT;
-#define DHT11_PIN 7
+#define DHTPIN 7     // Digital udgang forbundet til DHT sensor
+#define DHTTYPE DHT11   // DHT 11
+DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
   Serial.begin(9600);
@@ -441,13 +259,14 @@ void setup() {
   lcd.init();
   lcd.setBacklight((uint8_t)1);
 
+  dht.begin();
+
 }
 
 void loop() {
-  // Læst temperatur og fugtighed
-  int chk = DHT.read11(DHT11_PIN);
-  float temperature = DHT.temperature;
-  float humidity = DHT.humidity;
+  /// Måler temperatur og luftfugtighed
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
 
   // Vis data på LCD
   lcd.clear();
