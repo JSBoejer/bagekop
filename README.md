@@ -77,9 +77,9 @@ Inspiration til yderligere forsøg: Høj/lav temperatur, høj/lav fugtighed, lys
 Jeres data vil blive brugt i efterfølgende forelæsninger til import af data, visualisering af data, lineær regression, mv., for blandt andet at undersøge, hvornår og hvor hurtigt surdejsstarteren vokser.
 
 I får udleveret bøtter, mel og en surdej til jeres eksperiment. For at gøre eksperimenterne sammenlignelig, skal I til hvert eksperiment bruge følgende forhold af vand, mel og surdej.
-- 2 scoop mel
+- 1 scoop mel
 - 50 mL vand
-- 1 scoop surdej
+- 3/4 scoop surdej
 
 Når I blander dette grundigt sammen, skal jeres surdejsblanding opnå en konsistens der svarer til en flydende grød eller en 9% creme fraiche. Hvis I bruger rugmel kan det være at I skal tilføje en smule mere vand for at opnå rette konsistens.
 
@@ -97,4 +97,41 @@ Vi kommer til at medbringe mel og surdej til hver kursusgang, men I er meget vel
 
 Hvis I selv har prøvet at bage pizza, brød, boller mm. derhjemme, så ved I også at mel sviner helt vildt. For derfor at undgå at skulle svinge kosten alt for meget efter hver kursusgang, så vil vi foretrække, hvis I vil blande jeres surdej i området, hvor I får udleveret mel og surdej. Når I senere vasker jeres bøtter, så forsøg at hælde så meget surdej ud i skraldespanden før I vasker bøtten. Renggør også gerne vasken for dejrester efterfølgende. De sætter sig altid godt fast. Tak!
 
-## FAQ
+## FAQS
+
+<details>
+  <summary>Min output terminal i Arduino IDE viser fejlkode 74.</summary>
+
+
+  Problemet opstår fordi Arduino Ide ikke kan uploade koden til arduino-boardet.
+
+
+  Løsninger: 
+  - Sikre dig at arduino-boardet er ordenligt forbundet til computeren
+  - Tag stikket som forbinder arduino-boardet til computeren ud og ind igen.
+  - Tjek at I har installeret driveren Arduino UNO R4 Boards v1.3.2 (Se **Kom igang med Arduino UNO R4 minima**)
+</details>
+
+
+
+<details>
+  <summary>Macbook: "Permission denied" ved installation af biblioteker.</summary>
+
+
+  Problemet opstår fordi Arduino IDE ikke har adgang til at mappen, hvor den skal installere biblioteket.
+
+
+  Løsninger: 
+  - Gå til **Arduino IDE** > **Preferences** > **Sketchbook location**. I denne path skal du oprette en mappe kaldet **libraries**. Herefter download bibliotekerne på github ned, unzip dem, og flyt dem ind i libraries mappen. Nu er bibliotekerne installeret.
+</details>
+
+<details>
+  <summary>Hvilken modstand skal jeg bruge?</summary>
+
+Her er en video, som forklarer det meget godt: [Learn how to read resistor color codes in 1 minute](https://www.youtube.com/watch?v=AQnNTs-wpOg)
+
+Modstanden skal læse fra den retning, hvor båndene sidder tættest sammen og fra venstre mod højre. Det kan være svært at afkode farven eller læse retningen, så spørg gerne os, hvis I er i tvivl.
+
+![image](./images/modstand.png)
+
+</details>
