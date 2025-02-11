@@ -142,7 +142,7 @@ Indsæt 3PIN ledningen i laserafstandsmåleren. Forbind nu laser afstandsmålere
 | IR Sensor | Arduino Uno |
 | --------- | ----------- |
 | SORT      | GND         |
-| RØD       | 3.3V        |
+| RØD       | 5V        |
 | GUL       | A0          |
 
 ![Alt text](./images/image-8.png)

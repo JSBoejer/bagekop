@@ -77,9 +77,9 @@ Inspiration til yderligere forsøg: Høj/lav temperatur, høj/lav fugtighed, lys
 Jeres data vil blive brugt i efterfølgende forelæsninger til import af data, visualisering af data, lineær regression, mv., for blandt andet at undersøge, hvornår og hvor hurtigt surdejsstarteren vokser.
 
 I får udleveret bøtter, mel og en surdej til jeres eksperiment. For at gøre eksperimenterne sammenlignelig, skal I til hvert eksperiment bruge følgende forhold af vand, mel og surdej.
-- 1 scoop mel
+- 50 g mel
 - 50 mL vand
-- 3/4 scoop surdej
+- 50 g surdej
 
 Når I blander dette grundigt sammen, skal jeres surdejsblanding opnå en konsistens der svarer til en flydende grød eller en 9% creme fraiche. Hvis I bruger rugmel kan det være at I skal tilføje en smule mere vand for at opnå rette konsistens.
 
