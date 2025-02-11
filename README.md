@@ -74,7 +74,11 @@ Der skal som minimum udføres følgende 3 (successfulde) forsøg over 5 kursusga
 
 Inspiration til yderligere forsøg: Høj/lav temperatur, høj/lav fugtighed, lys/mørke, honning, andre meltyper (f.eks. tipo00, ølandshvedemel, speltmel)
 
-Jeres data vil blive brugt i efterfølgende forelæsninger til import af data, visualisering af data, lineær regression, mv., for blandt andet at undersøge, hvornår og hvor hurtigt surdejsstarteren vokser.
+Jeres data vil blive brugt i efterfølgende forelæsninger til import af data, visualisering af data, lineær regression, mv., for blandt andet at undersøge, hvornår og hvor hurtigt surdejsstarteren vokser. Husk at overveje, hvilket format når I gemmer på SD-kort. Kan det importeres nemt i R? 
+
+Typiske data formater:
+- Comma Separated Values (CSV)
+- Tab Separated Values (TSV)
 
 I får udleveret bøtter, mel og en surdej til jeres eksperiment. For at gøre eksperimenterne sammenlignelig, skal I til hvert eksperiment bruge følgende forhold af vand, mel og surdej.
 - 50 g mel (1 protein scoop)
