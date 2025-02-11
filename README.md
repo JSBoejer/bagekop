@@ -110,7 +110,8 @@ Hvis I selv har prøvet at bage pizza, brød, boller mm. derhjemme, så ved I og
   Problemet opstår fordi Arduino Ide ikke kan uploade koden til arduino-boardet.
 
 
-  Løsninger: 
+  Løsninger:
+  - Dobbeltklik på den røde knap og upload sketch til arduino-boardet igen.
   - Sikre dig at arduino-boardet er ordenligt forbundet til computeren
   - Tag stikket som forbinder arduino-boardet til computeren ud og ind igen.
   - Tjek at I har installeret driveren Arduino UNO R4 Boards v1.3.2 (Se **Kom igang med Arduino UNO R4 minima**)
