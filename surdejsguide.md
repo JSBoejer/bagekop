@@ -2,7 +2,7 @@
 
 ## Opstart af surdejsstarter
 
-Dag 0 - Du skal bruge 50 g økologisk hvedemel, 25 g økologisk hvedemel, 25 g økologisk rugmel og 3 dl koldt vand. Bland det sammen med hænderne, skrab kanterne og stil det lunt.
+Dag 0 - Du skal bruge 50 g økologisk hvedemel, 25 g fuldkornsmel, 25 g økologisk rugmel og 3 dl koldt vand. Bland det sammen med hænderne, skrab kanterne og stil det lunt.
 
 Dag 1-3 - Rør i surdejen morgen og aften med fingrene og skrab kanterne.
 
